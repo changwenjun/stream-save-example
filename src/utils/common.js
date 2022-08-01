@@ -139,13 +139,12 @@ export class FflateZip{
 
     }
 
-    add({filename,opt = {level:1},uint8Array,done}){
+    add({filename,opt = {level:1},uint8Array,done},cb){
         return new Promise((resolve,reject)=>{
-            this.promiseObject[filename] = resolve
             if(!this.zip){
                 const buffer = bufferMacroTaskChunk((chunk) => {
                     this.stream.write(chunk).then(() => {
-                        this.promiseObject[filename]()
+                        cb()
                     });
                 });
                 this.zip = new Zip((err, data, final)=>{
@@ -160,16 +159,11 @@ export class FflateZip{
                         buffer(data)
                     }
                 })
-
             }
 
-            if(!this.zipDeflateFile[filename]){
-                const zipStream = new ZipDeflate(filename,opt);
-                this.zip.add(zipStream);
-                this.zipDeflateFile[filename] = zipStream
-
-            }
-            this.zipDeflateFile[filename].push(uint8Array, done)
+            const zipStream = new ZipDeflate(filename,opt);
+            this.zip.add(zipStream);
+            zipStream.push(uint8Array, done)
         })
     }
 

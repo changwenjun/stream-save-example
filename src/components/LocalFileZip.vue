@@ -14,6 +14,7 @@ onMounted(async () => {
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
       const reader = file.stream().getReader()
+      console.log(file,'file')
       while (true) {
         const { done, value = new Uint8Array() } = await reader.read();
         const data = await fflateZip.add({
@@ -22,9 +23,11 @@ onMounted(async () => {
           filename:file.name,
           opt:{level:9}
         });
+        console.log(done,'done')
         if (done) break;
       }
     }
+    console.log('end')
     fflateZip.zip.end()
   });
 });

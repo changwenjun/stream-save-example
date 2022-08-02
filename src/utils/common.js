@@ -4,7 +4,7 @@ const register = async () => {
     // 已注册
     const registed = await navigator.serviceWorker.getRegistration("./");
     if (registed?.active) return registed.active;
-    const swRegistration = await navigator.serviceWorker.register('https://www.webmysql.com/sw.js', {
+    const swRegistration = await navigator.serviceWorker.register('sw.js', {
         scope: "./",
     });
     const sw = swRegistration.installing || swRegistration.waiting;
@@ -67,8 +67,7 @@ export class FflateZip {
         this.stream = options.stream
         this.zipStreams = {}
     }
-
-    add({filename, opt = {level: 12}, uint8Array, done}) {
+    add({filename, opt = {level: 1}, uint8Array, done}) {
         if (!this.zip) {
             this.zip = new Zip((err, data, final) => {
                 if (err || final) {
@@ -77,7 +76,7 @@ export class FflateZip {
                 this.stream.write(data)
             })
         }
-        if (!this.zipStreams[filename]) {
+        if(!this.zipStreams[filename]){
             const zipStream = new ZipDeflate(filename, opt);
             this.zip.add(zipStream);
             this.zipStreams[filename] = zipStream
@@ -85,7 +84,7 @@ export class FflateZip {
         this.zipStreams[filename].push(uint8Array, done)
     }
 
-    close() {
+    close(){
         this.zip.end()
     }
 }

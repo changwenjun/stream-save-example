@@ -65,27 +65,33 @@ export class FflateZip {
     constructor(options) {
         this.zip = null
         this.stream = options.stream
-        this.zipStreams = {}
     }
 
-    add({filename, opt = {level: 12}, uint8Array, done}) {
+    add({filename, opt = {level: 1}, uint8Array, done}, cb) {
         if (!this.zip) {
             this.zip = new Zip((err, data, final) => {
                 if (err || final) {
                     return this.stream.close();
                 }
-                this.stream.write(data)
+                const chunks = this.concatUnit8Array([data])
+                this.stream.write(chunks).then(cb)
             })
         }
-        if (!this.zipStreams[filename]) {
+        if(!this.zipStream){
             const zipStream = new ZipDeflate(filename, opt);
             this.zip.add(zipStream);
-            this.zipStreams[filename] = zipStream
+            this.zipStream = zipStream
         }
-        this.zipStreams[filename].push(uint8Array, done)
+        this.zipStream.push(uint8Array, done)
     }
 
-    close() {
-        this.zip.end()
+    concatUnit8Array(chunks) {
+        const len = chunks.reduce((len, {length}) => len + length, 0);
+        const mergeArr = new Uint8Array(len);
+        chunks.reduce((offset, chunk) => {
+            mergeArr.set(chunk, offset);
+            return offset + chunk.length;
+        }, 0);
+        return mergeArr
     }
 }

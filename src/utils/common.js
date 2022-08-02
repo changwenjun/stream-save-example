@@ -4,7 +4,7 @@ const register = async () => {
     // 已注册
     const registed = await navigator.serviceWorker.getRegistration("./");
     if (registed?.active) return registed.active;
-    const swRegistration = await navigator.serviceWorker.register('sw.js', {
+    const swRegistration = await navigator.serviceWorker.register('https://www.webmysql.com/sw.js', {
         scope: "./",
     });
     const sw = swRegistration.installing || swRegistration.waiting;

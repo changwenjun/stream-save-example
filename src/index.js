@@ -34,7 +34,9 @@ const portMessage = async (e) =>{
 
             if (type === 'end') {
                 fflateZip.zip.end()
+                port.close()
                 fflateZip = null;
+
             }
         }
     } catch (e) {
@@ -48,6 +50,6 @@ const onMessage = async (e) => {
     const {ports} = e;
     port = ports[0]
     port.onmessage = portMessage
-
+    window.removeEventListener('message',onMessage)
 }
 window.addEventListener('message', onMessage);

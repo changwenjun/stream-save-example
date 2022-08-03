@@ -63,6 +63,7 @@ onMounted(async () => {
           port1.postMessage({
             type:'end',
           });
+          port1.close()
         }
       }
 

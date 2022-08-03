@@ -3,6 +3,7 @@ import {onMounted, ref} from "@vue/runtime-core";
 import {createDownloadStream, FflateZip} from "../utils/common.js";
 
 const inputRef = ref<HTMLInputElement | null>(null);
+/*
 onMounted(async () => {
   inputRef.value?.addEventListener("change", async (e: any) => {
     const files: FileList = e.target!.files;
@@ -25,6 +26,68 @@ onMounted(async () => {
     }
     fflateZip.zip.end()
   });
+});
+*/
+
+onMounted(async () => {
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.webmysql.com/service-worker/index.html'
+  document.body.append(iframe)
+  iframe.onload= () =>{
+    inputRef.value?.addEventListener("change", async (e: any) => {
+      const files: FileList = e.target!.files;
+      if (files.length === 0) return;
+      const {port1,port2} = new MessageChannel();
+      iframe.contentWindow.postMessage('发送端口', '*', [port2]);
+      port1.postMessage({
+        type:'createDownloadStream',
+        saveFilename:'测试.zip'
+      });
+      port1.onmessage = async (e)=>{
+        if(e.data.type==='createDownloadStream'){
+          for (let i = 0; i < files.length; i++) {
+            const file = files.item(i);
+            const reader = file.stream().getReader()
+            while (true) {
+              const {done, value = new Uint8Array()} = await reader.read();
+              port1.postMessage({
+                type:'stream',
+                uint8Array: value,
+                done,
+                pathFilename:file.name
+              });
+              if (done) break;
+            }
+          }
+
+          port1.postMessage({
+            type:'end',
+          });
+        }
+      }
+
+
+
+    /*  const stream = (await createDownloadStream("LocalFileZip.zip"));
+      const fflateZip = new FflateZip({stream})
+      for (let i = 0; i < files.length; i++) {
+        const file = files.item(i);
+        const reader = file.stream().getReader()
+        while (true) {
+          const {done, value = new Uint8Array()} = await reader.read();
+          fflateZip.add({
+            uint8Array: value,
+            done,
+            filename: file.name,
+            opt: {level: 9}
+          });
+          if (done) break;
+        }
+      }
+      fflateZip.zip.end()*/
+    });
+  }
+
 });
 </script>
 

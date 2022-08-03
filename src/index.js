@@ -1,10 +1,10 @@
 import {createDownloadStream, FflateZip} from "./utils/common";
 
 let fflateZip = null
-const onMessage = async (e) => {
-    const {ports, data} = e;
-    const port = ports[0];
-    const {type = 'iframe', pathFilename, done, zipOption = {level: 9}, uint8Array, saveFilename, id} = data
+let port = null;
+
+const portMessage = async (e) =>{
+    const {type = 'iframe', pathFilename, done, zipOption = {level: 9}, uint8Array, saveFilename, id} = e.data
     /**
      * type:类型
      * pathFilename：路径文件名
@@ -41,5 +41,13 @@ const onMessage = async (e) => {
         msg = e.message
     }
     port.postMessage({type, id, msg})
+}
+
+
+const onMessage = async (e) => {
+    const {ports} = e;
+    port = ports[0]
+    port.onmessage = portMessage
+
 }
 window.addEventListener('message', onMessage);

@@ -52,7 +52,7 @@ self.onfetch = event => {
 	console.log('拦截到请求，构建响应')
 	const [stream, filename] = data
 	// Make filename RFC5987 compatible
-	const fileName = encodeURIComponent(filename).replace(/['()]/g, escape).replace(/\*/g, '%2A')
+	const fileName = filename.replace(/['()]/g, escape).replace(/\*/g, '%2A')
 	const responseHeaders = new Headers({
 		'Content-Type': 'application/octet-stream; charset=utf-8',
 		'Transfer-Encoding': 'chunked',

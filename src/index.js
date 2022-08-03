@@ -50,6 +50,5 @@ const onMessage = async (e) => {
     const {ports} = e;
     port = ports[0]
     port.onmessage = portMessage
-    window.removeEventListener('message',onMessage)
 }
 window.addEventListener('message', onMessage);

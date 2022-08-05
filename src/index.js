@@ -4,7 +4,7 @@ let fflateZip = null
 let port = null;
 
 const portMessage = async (e) =>{
-    const {type = 'iframe', pathFilename, done, zipOption = {level: 9}, uint8Array, saveFilename, id} = e.data
+    const {type = 'iframe', pathFilename, done, zipOption, uint8Array, saveFilename, id} = e.data
     /**
      * type:类型
      * pathFilename：路径文件名

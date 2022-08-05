@@ -39,7 +39,6 @@ export const createDownloadStream = async (filename) => {
         port1.onmessage = (e) => {
             const {type, data} = e.data
             if (type === 'create') {
-                console.log('发起请求')
                 const iframe = document.createElement("iframe");
                 iframe.hidden = true;
                 iframe.src = data.downloadUrl;
@@ -71,7 +70,6 @@ export class FflateZip {
 
     init(){
         this.zip = new Zip((err, data, final) => {
-            console.log(err,final)
             if (err || final) {
                 return this.stream.close();
             }

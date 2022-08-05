@@ -2,12 +2,14 @@
 import LocalFileDownload from "./components/LocalFileDownload.vue";
 import LocalFileZip from "./components/LocalFileZip.vue";
 import JSZip from "./components/JSZip.vue";
+import Dzip from "./components/dzip.vue";
 </script>
 
 <template>
-  <JSZip />
-  <LocalFileDownload />
-  <LocalFileZip />
+  <Dzip />
+<!--  <JSZip />-->
+<!--  <LocalFileDownload />-->
+<!--  <LocalFileZip />-->
 </template>
 
 <style>

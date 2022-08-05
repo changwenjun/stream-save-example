@@ -18,12 +18,12 @@ const portMessage = async (e) =>{
     let msg = '';
     try {
         if (type) {
-            if (type === 'createDownloadStream' && !fflateZip) {
+            if (type === 'createTransportStream' && !fflateZip) {
                 const downloadStream = await createDownloadStream(saveFilename)
                 fflateZip = new FflateZip({stream: downloadStream})
             }
 
-            if (type === 'stream') {
+            if (type === 'transportStream') {
                 fflateZip.add({
                     uint8Array,
                     done,
@@ -32,8 +32,8 @@ const portMessage = async (e) =>{
                 });
             }
 
-            if (type === 'end') {
-                fflateZip.zip.end()
+            if (type === 'transportEnd') {
+                fflateZip.close()
                 port.close()
                 fflateZip = null;
 
@@ -47,8 +47,11 @@ const portMessage = async (e) =>{
 
 
 const onMessage = async (e) => {
-    const {ports} = e;
-    port = ports[0]
-    port.onmessage = portMessage
+    if(e.data==='port'){
+        const {ports} = e;
+        port = ports[0]
+        port.onmessage = portMessage
+    }
+
 }
 window.addEventListener('message', onMessage);

@@ -23,7 +23,6 @@ const register = async () => {
 }
 
 
-
 // 创建下载流
 export const createDownloadStream = async (filename) => {
     const {port1, port2} = new MessageChannel();
@@ -64,35 +63,31 @@ export const createDownloadStream = async (filename) => {
 
 export class FflateZip {
     constructor(options) {
+        this.zip = null
         this.stream = options.stream
         this.zipStreams = {}
-        this.init()
     }
-
-    init(){
-        this.zip = new Zip((err, data, final) => {
-            console.log(err,final)
-            if (err || final) {
-                return this.stream.close();
-            }
-            this.stream.write(data)
-        })
-    }
-
-
     add({filename, opt = {level: 1}, uint8Array, done}) {
+        if (!this.zip) {
+            this.zip = new Zip((err, data, final) => {
+                console.log('结束流传输',err,final)
+                if (err || final) {
+                    console.log('结束流传输')
+                    return this.stream.close();
+                }
+                this.stream.write(data)
+            })
+        }
         if(!this.zipStreams[filename]){
             const zipStream = new ZipDeflate(filename, opt);
             this.zip.add(zipStream);
             this.zipStreams[filename] = zipStream
         }
+        console.log('zipStreams',filename,uint8Array,done)
         this.zipStreams[filename].push(uint8Array, done)
     }
 
     close(){
         this.zip.end()
-        this.zip = null
-        this.stream = null
-        this.zipStreams = {}
     }
 }

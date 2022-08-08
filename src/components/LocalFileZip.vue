@@ -3,7 +3,6 @@ import {onMounted, ref} from "@vue/runtime-core";
 import {createDownloadStream, FflateZip} from "../utils/common.js";
 
 const inputRef = ref<HTMLInputElement | null>(null);
-/*
 onMounted(async () => {
   inputRef.value?.addEventListener("change", async (e: any) => {
     const files: FileList = e.target!.files;
@@ -27,8 +26,7 @@ onMounted(async () => {
     fflateZip.zip.end()
   });
 });
-*/
-
+/*
 onMounted(async () => {
   const iframe = document.createElement('iframe');
   iframe.src = 'https://www.webmysql.com/service-worker/index.html'
@@ -38,20 +36,22 @@ onMounted(async () => {
       const files: FileList = e.target!.files;
       if (files.length === 0) return;
       const {port1,port2} = new MessageChannel();
-      iframe.contentWindow.postMessage('发送端口', '*', [port2]);
+      iframe.contentWindow.postMessage('port', '*', [port2]);
       port1.postMessage({
-        type:'createDownloadStream',
+        type:'createTransportStream',
         saveFilename:'测试.zip'
       });
       port1.onmessage = async (e)=>{
-        if(e.data.type==='createDownloadStream'){
+        console.log(111)
+        if(e.data.type==='createTransportStream'){
+          console.log(111)
           for (let i = 0; i < files.length; i++) {
             const file = files.item(i);
             const reader = file.stream().getReader()
             while (true) {
               const {done, value = new Uint8Array()} = await reader.read();
               port1.postMessage({
-                type:'stream',
+                type:'transportStream',
                 uint8Array: value,
                 done,
                 pathFilename:file.name
@@ -61,35 +61,14 @@ onMounted(async () => {
           }
 
           port1.postMessage({
-            type:'end',
+            type:'transportEnd',
           });
           port1.close()
         }
       }
-
-
-
-    /*  const stream = (await createDownloadStream("LocalFileZip.zip"));
-      const fflateZip = new FflateZip({stream})
-      for (let i = 0; i < files.length; i++) {
-        const file = files.item(i);
-        const reader = file.stream().getReader()
-        while (true) {
-          const {done, value = new Uint8Array()} = await reader.read();
-          fflateZip.add({
-            uint8Array: value,
-            done,
-            filename: file.name,
-            opt: {level: 9}
-          });
-          if (done) break;
-        }
-      }
-      fflateZip.zip.end()*/
-    });
+    })
   }
-
-});
+});*/
 </script>
 
 <template>

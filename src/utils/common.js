@@ -23,7 +23,6 @@ const register = async () => {
 }
 
 
-
 // 创建下载流
 export const createDownloadStream = async (filename) => {
     const {port1, port2} = new MessageChannel();
@@ -46,11 +45,11 @@ export const createDownloadStream = async (filename) => {
                 document.body.appendChild(iframe);
                 r({
                     write: (value) => {
-                        sw.postMessage({type: 'transport', data: {value}})
+                        sw.postMessage({type: 'transport', data: {value}, key: data.downloadUrl})
                         return new Promise(resolve => callbacks['transport'] = resolve)
                     },
                     close: () => {
-                        sw.postMessage({type: 'end'})
+                        sw.postMessage({type: 'end', key: data.downloadUrl})
                         return new Promise(resolve => callbacks['end'] = resolve)
                     }
                 })
@@ -68,7 +67,7 @@ export class FflateZip {
         this.init()
     }
 
-    init(){
+    init() {
         this.zip = new Zip((err, data, final) => {
             if (err || final) {
                 return this.stream.close();
@@ -79,7 +78,7 @@ export class FflateZip {
 
 
     add({filename, opt = {level: 1}, uint8Array, done}) {
-        if(!this.zipStreams[filename]){
+        if (!this.zipStreams[filename]) {
             const zipStream = new ZipDeflate(filename, opt);
             this.zip.add(zipStream);
             this.zipStreams[filename] = zipStream
@@ -87,7 +86,7 @@ export class FflateZip {
         this.zipStreams[filename].push(uint8Array, done)
     }
 
-    close(){
+    close() {
         this.zip.end()
         this.zip = null
         this.stream = null

@@ -3,7 +3,7 @@ import {onMounted, ref} from "@vue/runtime-core";
 import {createDownloadStream, FflateZip} from "../utils/common.js";
 
 const inputRef = ref<HTMLInputElement | null>(null);
-onMounted(async () => {
+/*onMounted(async () => {
   inputRef.value?.addEventListener("change", async (e: any) => {
     const files: FileList = e.target!.files;
     if (files.length === 0) return;
@@ -25,8 +25,7 @@ onMounted(async () => {
     }
     fflateZip.zip.end()
   });
-});
-/*
+});*/
 onMounted(async () => {
   const iframe = document.createElement('iframe');
   iframe.src = 'https://www.webmysql.com/service-worker/index.html'
@@ -68,7 +67,7 @@ onMounted(async () => {
       }
     })
   }
-});*/
+});
 </script>
 
 <template>

@@ -1,5 +1,8 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
+// @ts-ignore
+import html from '@rollup/plugin-html'
+import copy from 'rollup-plugin-copy'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue()],
@@ -15,8 +18,16 @@ export default defineConfig({
     },
     build:{
         rollupOptions:{
+            plugins: [
+                html(),
+                copy({
+                    targets: [
+                        { src: 'public/sw.js', dest: 'dist' },
+                    ]
+                })
+            ],
             input: {
-                'iframe-stream-download': './src/index.js',
+                'index': './src/utils/index.ts'
             },
             output: {
                 entryFileNames: '[name].js',

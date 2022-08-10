@@ -722,14 +722,3 @@ onMounted(async () => {
     }
   });
 });
-
-```
-
-是的，就是这么简单。
-
-这里有一份[完整的代码](https://github.com/lei4519/stream-save-example)，感兴趣的可以克隆跑起来看看。
-
-## 参考资料
-
-- [StreamSaver.js](https://github.com/jimmywarting/StreamSaver.js)
-- [MDN](https://developer.mozilla.org/zh-CN/)
